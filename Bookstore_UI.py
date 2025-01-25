@@ -174,15 +174,20 @@ def fetch_orders(supplier_name=None, status=None):
         st.error("Failed to fetch orders. Please try again.")
         return []
 
+# Updated Function to Cancel an Order
 def cancel_order(order_id):
-    response = requests.put(f"{API_BASE_URL}/cancel/{order_id}")
-    if response.status_code == 200:
-
-        st.success("Order canceled successfully!")
-
-        return True
-    else:
-        st.error(f"Failed to cancel order: {response.text}")
+    try:
+        # Use the correct endpoint as per Swagger
+        response = requests.put(f"{API_BASE_URL}/manufacturerOrders/cancel/{order_id}")
+        
+        if response.status_code == 200:
+            st.success("Order canceled successfully!")
+            return True
+        else:
+            st.error(f"Failed to cancel order: {response.json()}")
+            return False
+    except requests.exceptions.RequestException as e:
+        st.error(f"Request failed: {e}")
         return False
     
 # API Fuctions for user authentication
